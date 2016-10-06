@@ -1,0 +1,3 @@
+ifort -c *.f90 *.F90 *.F *.f
+
+ar rc ../libNRC.a *.o
