@@ -13,7 +13,7 @@
   write(6,*)      '            VARIOUS IMPROVEMENTS AND CHANGES IN THEORY AND CODING LAYOUT      '
   write(6,*)      '                                                 BY WILLIAM PRINGLE (2016)    '
   write(6,*)      '                                                                              ' 
-  write(6,*)      '           -FOR USE OF INPUT/OUTPUT FILES AND VISUALIZATION PROGRAMS          '
+  write(6,*)      '           -FOR USE OF INPUT/OUTPUT FILES AND VISUALIZATION PROGRAMS (GEN64)  '
   write(6,*)      '            DEVELOPED BY NOZOMU YONEYAMA                                      '
   write(6,*)      '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
   write(6,*)      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
@@ -42,6 +42,28 @@
 	  write(6,*) 'Allowable error in Poisson Pressure matrix solver=',eps0
 	  write(6,*) 'Viscosity=',nu,'[m^2s^-1]'
 	  write(6,*) 'init turbulent intensity =',TI_b,'nu_t ratio=',nut_b
+	  if (vt_op.eq.0) then
+	  	write(6,*) 'Turbulence model = Standard k-eps'
+	  elseif (vt_op.eq.1) then
+		write(6,*) 'Turbulence model = Standard k-eps with adjustment in low turbulent regions'
+	  elseif (vt_op.eq.2) then
+		write(6,*) 'Turbulence model = Smagorinsky'
+	  elseif (vt_op.eq.3) then
+		write(6,*) 'Turbulence model = Realizable k-eps'
+          else
+	        stop 'Unavailable turbulence model: 0 <= vt_op <= 3 only'
+	  endif
+	  if (pro_lim.eq.0) then
+		write(6,*) 'No production limiter'
+	  elseif (pro_lim.eq.1) then
+		write(6,*) 'Kato-Launder production limiter'
+	  elseif (pro_lim.eq.2) then
+		write(6,*) 'Menter production limiter'
+	  elseif (pro_lim.eq.3) then
+		write(6,*) 'Combination of Kato-Launder and Menter production limiters'
+	  else
+		stop 'Unavailable production limiter: 0 <= pro_lim <=3 only'
+	  endif
 	  if (dt.eq.ZERO) then
 		write(6,*) 'Courant set limit=',cl_set,'Max. timestep limit=',dtmax,'[sec]'
 	  else

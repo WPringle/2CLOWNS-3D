@@ -1,0 +1,63 @@
+1			: IM - Model type (Hybrid = 1, 2DH = 2, 3D = 3)
+100000     		: Max No. of timesteps
+10,1          		: Info output cycle(MWR), Data output frequency (Hz)
+0d0			: time of first data output(tw) [s]
+12d0	                : data output interval(dtw) [s]
+1 			: ko_tmp
+0			: ko_out
+7200d0   		: time end [s]
+9.80665d0               : gravity [ms^-2]
+1.0d-6                  : kinematic viscosity [m^2s^-1]
+0d0,0.5d0,0.4d0		: dti [s],dtmax [s], cl_set
+1d-5			: d0   (allowable error in continuity)
+1d-10                   : eps0 (allowable error in PPE)                                               =======================3D Mesh and Topography inputs===========================
+../init/Satakev8.0_10m_onshore_3D_z2.2_c
+../init/Satakev8.0_10m_onshore_3D_z2.2_c.xyzn
+../init/Satakev8.0_10m_onshore_3D_z2.2_c.fdata
+../DATA/SatakeT_HYB_realizable_ke
+0d0			: tide_level [m]
+5			: LNUM (number of 2DH layers)
+0d0,0.7d0		: dti [s], cl_set
+1,0,0,0			: SWE, DISP, GEOC, BC
+1d-2,1,GT		: Dmin [m], Change Depths?, IC
+-1d0			: Manning's n
+2,0			: Coupling dimension, write out info?  
+0d0,0.7d0		: dti [s], cl_set
+1,0,0,0			: SWE, DISP, GEOC, BC
+1d-2,1,GT		: Dmin [m], Change Depths?, IC
+-1d0			: Manning's n
+2,0			: Coupling dimension, write out info?  
+0d0,0.7d0		: dti [s], cl_set
+1,0,0,0			: SWE, DISP, GEOC, BC
+1d-2,1,GT		: Dmin [m], Change Depths?, IC
+-1d0			: Manning's n
+2,0			: Coupling dimension, write out info?  
+0d0,0.7d0		: dti [s], cl_set
+1,0,0,0			: SWE, DISP, GEOC, BC
+1d-2,1,GT		: Dmin [m], Change Depths?, IC
+-1d0			: Manning's n
+2,0			: Coupling dimension, write out info?  
+0d0,0.7d0		: dti [s], cl_set
+1,0,0,0			: SWE, DISP, GEOC, BC
+1d-2,1,GT		: Dmin [m], Change Depths?, IC
+-1d0			: Manning's n
+2,1			: Coupling dimension, write out info?                                         ========================2D Mesh and Topography inputs===========================
+../init/Tohoku_2D
+../init/Tohoku_2D.xyzn
+../init/Tohoku_2D.fdata
+0.8d0        		: akrate (Turbulent
+1.0d0        		: erate   boundary
+1            		: ike     parameters)
+5d-3,1d-3		: ks roughness height [m] (estimate of bed)
+0                       : Pro. limiter (=0 none, =1 KL-mod, =2 Menter, =3 both)
+3                       : nu_t option (=0 normal, =1 LS adj, =2 smagorinsky, = 3 realizable)  
+NODRI          
+WALL,OPEN,OPEN,OPEN     : 2D Boundary conditions (North,South,East,West)  
+2DNN,2DNN,2DNN,2DNN     : 3D Boundary conditions (North,South,East,West)  
+0.0d0			: h_in (free-surface height relative to datum) 
+GT,PN,*,30d0,300d0	: wavetype, order, format, dt, T_end   
+../init/Satakev8.0_t.dat
+1d0			: GDR
+50d0,1d-6, 1d-5         : Chardepth, TI_b, (nut_/nu)_b
+../init/output_kamaishi_2016.csv
+12                      : required thread nun (all thread =0 )

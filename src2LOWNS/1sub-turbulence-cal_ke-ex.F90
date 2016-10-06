@@ -216,7 +216,7 @@ DO  nnf = 1,ifln
            r1(nn)%e = ( rc0%e + DT * eox1 ) / ( ONE + DT * ce2 * rc%e /      &
                                               ( rc%k + sqrt(nu1 * rc%e) ) ) 
         else
-           ! The srandard k-eps model equations for eta
+           ! The standard k-eps model equations for eta
            eox1 = ( DIFF%e - sum(fx%e) ) / fb(nn) + ce1 * PRO(nn) * rc%e / rc%k 
            ! Find the new turbulent dissipation rate through semi implicit scheme
            r1(nn)%e = ( rc0%e + DT * eox1 ) / ( ONE + DT * ce2 * rc%e / rc%k ) 
