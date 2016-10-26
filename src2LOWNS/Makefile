@@ -2,11 +2,10 @@ FC = ifort
 SRC = 
 incdir = -I../include
 libdir = -L../lib
-FFLAGS = -O3 -c -openmp -fpp -fpe0 -xHost -convert big_endian -r8 $(incdir) -DNORMAL -DOBJECT -DRAN -DSLIDE0 -traceback #-g -check bounds 
+FFLAGS = -O3 -c -openmp -fpp -fpe0 -xHost -convert big_endian -r8 $(incdir) -DRAN -DNORMAL -DOBJECT -DSLIDE0 -traceback #-g -check bounds 
 LFLAGS =  -O3 -openmp $(libdir) -lNRC
 LINK = $(FC)
-TARGET =  ../execute/2CLOWNS_3D_Oct6.exe
-TARGET2 =  
+TARGET =  ../execute/2CLOWNS_3D.exe
 OBJS =  0mod-type_interface.o \
 	0mod-variables.o \
 	0mod-arrays.o \
@@ -46,21 +45,14 @@ OBJS =  0mod-type_interface.o \
 	set_surface_velocity.o \
 	main_2CLOWNS.o \
 	
-OBJS2 = sample.o \
-
-all: $(TARGET) $(TARGET2)
+all: $(TARGET) 
 
 clean: 
 	-rm -rf *.o *.mod
 
 $(TARGET): $(OBJS)
 	$(LINK) -o $@ $(OBJS) $(LFLAGS) 
-#$(TARGET2): $(OBJS2)
-#	$(LINK) -o $@ $(OBJS2) -openmp
 %.o : $(srcdir)%.F90
 	$(FC) $(FFLAGS) $< -o $@
 %.o : $(srcdir)%.f90
 	$(FC) $(FFLAGS) $< -o $@
-
-#ifort src/pcgpme.F -c -fast -fpp -openmp -parallel -fpe0 -convert big_endian 
-#@printf "$(OBJS)\n"
