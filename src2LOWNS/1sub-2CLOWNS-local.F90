@@ -15,9 +15,12 @@ subroutine read_local_data
                                ! relative to the arbitrary 3D - datum       
     endif
     call read_Wavedata
+#ifdef RAN
     if (IM.eq.1.or.IM.eq.3) read(5,*) Chardepth, TI_b, nut_b
+#endif
     read(5,'(A255)') output_file
 #include "2CLOWNS_banner.inc"
+#ifdef RAN
     if (IM.eq.1.or.IM.eq.3) then
     !--------------------------------------------------------------------------
     ! From: Lin, P & Liu, P L F, (1998).
@@ -37,6 +40,7 @@ subroutine read_local_data
     r_lim%e = sqrt(Chardepth * g**3)
     !--------------------------------------------------------------------------
     endif
+#endif
 end subroutine read_local_data
     
 subroutine local_initial_process

@@ -41,6 +41,7 @@
 	  write(6,*) 'Allowable limit for error in continuity eqn',D0,'[ms^-2]'
 	  write(6,*) 'Allowable error in Poisson Pressure matrix solver=',eps0
 	  write(6,*) 'Viscosity=',nu,'[m^2s^-1]'
+#ifdef RAN
 	  write(6,*) 'init turbulent intensity =',TI_b,'nu_t ratio=',nut_b
 	  if (vt_op.eq.0) then
 	  	write(6,*) 'Turbulence model = Standard k-eps'
@@ -64,6 +65,9 @@
 	  else
 		stop 'Unavailable production limiter: 0 <= pro_lim <=3 only'
 	  endif
+#else
+	  write(6,*) 'No turbulence modelling (potential flow)'
+#endif
 	  if (dt.eq.ZERO) then
 		write(6,*) 'Courant set limit=',cl_set,'Max. timestep limit=',dtmax,'[sec]'
 	  else

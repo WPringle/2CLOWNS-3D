@@ -362,7 +362,9 @@ subroutine data_input
       if (IM.eq.1.or.IM.eq.3) then
         call read_data
         call read_fdata
+#ifdef RAN
         call read_rdata
+#endif
 #ifdef NORMAL
         call read_nsdata
 #endif
