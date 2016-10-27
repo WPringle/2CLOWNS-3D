@@ -918,10 +918,10 @@ if (bound(1:1).eq.'N') then
    enddo
    if (count > 0) then
       RMSEn = sqrt(RMSEn/count)
-      Muln  = max( ONE, RMSEn / abs(U_3D(abs(iy),nnxp2)) )    
+      Muln  = min( ONE, abs(U_3D(abs(iy),nnxp2)) / RMSEn )    
       if (DIM.gt.1) then
           RMSEt = sqrt(RMSEt/count)
-          Mult  = max( ONE, RMSEt / abs(U_3D(abs(ix),nn_22)) )    
+          Mult  = min( ONE, abs(U_3D(abs(ix),nn_22)) / RMSEt )    
       endif 
    else
       Muln  = ONE; Mult = ONE
