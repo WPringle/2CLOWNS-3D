@@ -697,10 +697,10 @@ subroutine Interp_2D_bound_to_3D(ii,ix,iy,i,j,DIM,DT_CF,bound)
     character*2,intent(in) :: bound
     !----------------- Temporary variables used in the routine ----------------
     logical :: exist
-    integer :: iii, nn_1, nn_2, nn_3, jj, isign, k, i4, jjj, cc
+    integer :: iii, nn_1, nn_2, nn_3, jj, isign, k, i4, jjj, cc, count
     integer :: nnxm, nnxp, nnxp2, nn_22, ixv(-2:1), iyv(-2:1)
     real*8  :: znow, wll, zkk, U_av, h_av, V_av, V_t, open_rat
-    real*8  :: DX_R, DX_N, DUDX, D2UDX2
+    real*8  :: RMSEn, RMSEt, Muln, Mult, DX_R, DX_N, DUDX, D2UDX2
     real*8  :: wl(-2:1), zk(-2:1), c(-1:0)
     real*8,dimension(-1:1) :: m, h, dp, U2D
 !=============================================================================!
@@ -893,11 +893,43 @@ DIM_LOOP: do iii = 1, DIM
         !---------------------------------------------------------------------!
         DUDX = DUDX + ( V_t - V_av ) / DX_R
     endif    
-enddo DIM_LOOP  
+enddo DIM_LOOP 
+nnxp2 = mn2d(i+max(ix,0)+ix,j+max(iy,0)+iy) ; nn_22 = mn2d(i+ix,j+iy)
+!-----------------------------------------------------------------------------!
+! Include correction for large RMSE between depth-averaged and not            !
+! for no fluctaution gradient                William Oct 27 2016              ! 
+!-----------------------------------------------------------------------------!
+if (bound(1.1).eq.'N') then
+   RMSEn = ZERO; RMSEt = ZERO; count = 0
+   do k = ks,ke-1
+        nn_1 = mn(i,k,j) ; nn_2 = mn(i+ix,k,j+iy)
+        if (nff(nn_1)%b.eq.0) cycle
+        if (nff(nn_1)%b.ne.2) nff(nn_1)%b = 2
+        if (nff(nn_2)%f.eq.-1) cycle
+        nnxm = mn(i+max(ix,0),k,j+max(iy,0))
+        if (a(abs(iy),nnxm).eq.ZERO) cycle
+        if (x(2,k).ge.wll + h_in) cycle
+        nnxp = mn(i+max(ix,0)+ix,k,j+max(iy,0)+iy)
+        count = count + 1
+        RMSEn = RMSEn + ( un(abs(iy),nnxp) - U_3D(abs(iy),nnxp2) )**2 
+        if (DIM.gt.1) then
+            RMSEt = RMSEt + ( un(abs(ix),nn_2) - U_3D(abs(ix),nn_22) )**2
+        endif
+   enddo
+   if (count > 0) then
+      RMSEn = sqrt(RMSEn/count)
+      Muln  = max( ONE, RMSEn / abs(U_3D(abs(iy),nnxp2)) )    
+      if (DIM.gt.1) then
+          RMSEt = sqrt(RMSEt/count)
+          Mult  = max( ONE, RMSEt / abs(U_3D(abs(ix),nn_22)) )    
+      endif 
+   else
+      Muln  = ONE; Mult = ONE
+   endif
+enddo
 !-----------------------------------------------------------------------------!
 ! Loop over the vertical direction and input the values...                    !
 !-----------------------------------------------------------------------------!
-nnxp2 = mn2d(i+max(ix,0)+ix,j+max(iy,0)+iy) ; nn_22 = mn2d(i+ix,j+iy)
 do k = ks,ke-1
     nn_1 = mn(i,k,j) ; nn_2 = mn(i+ix,k,j+iy)
     if (nff(nn_1)%b.eq.0) cycle
@@ -941,11 +973,11 @@ do k = ks,ke-1
                                   min(ONE,f(nn_2)) + f(nn_1) ) , TWO )
             !               u    =   U  +  ratio     *       u'
             if (x(2,k+1).le.wll + h_in) then
-                un(abs(iy),nnxm) = U_av + open_rat                            &
+                un(abs(iy),nnxm) = U_av + open_rat * Muln                     &
                                     * ( un(abs(iy),nnxp) - U_3D(abs(iy),nnxp2))
             else
                 nnxp = mn(i+max(ix,0)+ix,k-1,j+max(iy,0)+iy)
-                un(abs(iy),nnxm) = U_av + open_rat                            &
+                un(abs(iy),nnxm) = U_av + open_rat * Muln                     &
                                     * ( un(abs(iy),nnxp) - U_3D(abs(iy),nnxp2))
             endif
             ! Mathematically since mean(u') = 0 this formulation is
@@ -962,7 +994,7 @@ do k = ks,ke-1
                 open_rat = min( wdiv( min(ONE,f(nn_3)) + min(ONE,f(nn_2)) ,   &
                                       f(nnxp) + f(nn_1) ) , TWO )
                 !       v        =   V  +   ratio   *    v'    
-                un(abs(ix),nn_1) = V_av + open_rat                            &
+                un(abs(ix),nn_1) = V_av + open_rat * Mult                     &
                                     * ( un(abs(ix),nn_2) - U_3D(abs(ix),nn_22))
             else
                 ! Uniform velocity distribution (NSW)
