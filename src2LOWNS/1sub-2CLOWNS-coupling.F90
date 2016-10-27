@@ -899,7 +899,7 @@ nnxp2 = mn2d(i+max(ix,0)+ix,j+max(iy,0)+iy) ; nn_22 = mn2d(i+ix,j+iy)
 ! Include correction for large RMSE between depth-averaged and not            !
 ! for no fluctaution gradient                William Oct 27 2016              ! 
 !-----------------------------------------------------------------------------!
-if (bound(1.1).eq.'N') then
+if (bound(1:1).eq.'N') then
    RMSEn = ZERO; RMSEt = ZERO; count = 0
    do k = ks,ke-1
         nn_1 = mn(i,k,j) ; nn_2 = mn(i+ix,k,j+iy)
@@ -926,7 +926,7 @@ if (bound(1.1).eq.'N') then
    else
       Muln  = ONE; Mult = ONE
    endif
-enddo
+endif
 !-----------------------------------------------------------------------------!
 ! Loop over the vertical direction and input the values...                    !
 !-----------------------------------------------------------------------------!
