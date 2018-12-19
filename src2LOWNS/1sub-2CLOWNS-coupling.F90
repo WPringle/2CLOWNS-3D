@@ -601,7 +601,8 @@ do nn = 1, L_out%inne2 !Loop over the outer layer cells in the inner layer
         endif
         ! Get the mean of the fluxes and depths in the inner layer that 
         ! fit within the bounding box of the outer layer
-        Qsum = ZERO ; Dsum = ZERO ; icount = 0 
+        Qsum = ZERO ; Dsum = ZERO
+        icount = 0 
         do iii = 1,ubound(L_out%INTER_MAP,2)
             if (L_out%INTER_MAP(ii,iii,nn).ne.0) then
                 icount = icount + 1
@@ -759,8 +760,14 @@ DIM_LOOP: do iii = 1, DIM
                 ! (We need M^(n:n+1) and know M^(n+1) & M^n)
                 m(jj) = L(LNUM)%Qn(iii,nn_1) * DT_CF                          &
                       + L(LNUM)%Q(iii,nn_1) * (ONE - DT_CF)
-                ! Find the initial water depth from interpolation in space
-                h(jj) = L(LNUM)%H(iii,nn_1)
+                ! Find the initial water depth
+                !if (jj.eq.0) then
+                !    ! To get correct flux into domain use 3D one
+                !    h(jj) = IWD(mn2d(i+ix,j+iy)) 
+                !else
+                    ! From 2DH one
+                    h(jj) = L(LNUM)%H(iii,nn_1)
+                !endif
                 ! Find the total water depth
                 if (-h(jj).gt.zk(jj-1).and.-h(jj).gt.zk(jj)) then
                     ! In case of a wall
@@ -856,9 +863,8 @@ DIM_LOOP: do iii = 1, DIM
                         ! and space (We need M^(n:n+1) and know M^(n+1) & M^n)
                         m(jj) = L(LNUM)%Qn(iii,nn_1) * DT_CF                  &
                               + L(LNUM)%Q(iii,nn_1) * (ONE - DT_CF)
-                        ! Find the initial water depth 
-                        ! from interpolation in space
-                        h(jj)  = L(LNUM)%H(iii,nn_1)
+                        ! Get initial water depth from 2DH one
+                        h(jj) = L(LNUM)%H(iii,nn_1)
                         ! Find the total water depth
                         if (-h(jj).gt.zk(jj-1).and.-h(jj).gt.zk(jj)) then
                             ! In case of a wall
@@ -896,7 +902,7 @@ DIM_LOOP: do iii = 1, DIM
 enddo DIM_LOOP 
 nnxp2 = mn2d(i+max(ix,0)+ix,j+max(iy,0)+iy) ; nn_22 = mn2d(i+ix,j+iy)
 !-----------------------------------------------------------------------------!
-! Include correction for large RMSE between depth-averaged and not            !
+! Include correction for large RMSE between depth-averaged and local velocity !
 ! for no fluctaution gradient                William Oct 27 2016              ! 
 !-----------------------------------------------------------------------------!
 if (bound(1:1).eq.'N') then

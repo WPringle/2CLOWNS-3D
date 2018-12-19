@@ -110,7 +110,7 @@ DO  nnf = 1,ifln
                     if (ks_r(nff(ipkj)%b).ge.ZERO) then
                         blayer = .true.
                         ! Now get bc with wall function
-                        wf(l,ll) = rbnd(rc,vv(l),dxc,ks_r(nff(ipkj)%b))
+                        wf(l,ll) = rbnd(rc,vv(l),fb(nn)*dxc,ks_r(nff(ipkj)%b))
                     endif
                 endif
             elseif (nff(ipkj)%f.eq.0) then
@@ -208,7 +208,7 @@ DO  nnf = 1,ifln
     ! Find the new turbulent dissipation rate
     if (rc%k.gt.ZERO) then
         if (vt_op.eq.3) then
-           ! The realizable k-eps model equation for eta
+           ! The realizable k-eps model equation for eps
            eta  = SS(nn) * rc%k / rc%e
            C1   = max( c1r , eta / ( eta + FIVE ) )
            eox1 = ( DIFF%e - sum(fx%e) ) / fb(nn) + C1 * SS(nn) * rc%e
@@ -216,7 +216,7 @@ DO  nnf = 1,ifln
            r1(nn)%e = ( rc0%e + DT * eox1 ) / ( ONE + DT * ce2 * rc%e /      &
                                               ( rc%k + sqrt(nu1 * rc%e) ) ) 
         else
-           ! The standard k-eps model equations for eta
+           ! The standard k-eps model equations for eps
            eox1 = ( DIFF%e - sum(fx%e) ) / fb(nn) + ce1 * PRO(nn) * rc%e / rc%k 
            ! Find the new turbulent dissipation rate through semi implicit scheme
            r1(nn)%e = ( rc0%e + DT * eox1 ) / ( ONE + DT * ce2 * rc%e / rc%k ) 
@@ -236,7 +236,7 @@ DO  nnf = 1,ifln
     r1(nn)%k = rc0%k + DT * akox1
     ! Consider wall function 
     if (blayer) then
-        ! Only wall function only for full fluid cells
+        ! Wall function only for full fluid cells
         !if (nff(nn)%f.eq.1) then
         r1(nn)%k = maxval(wf%k) ; r1(nn)%e = maxval(wf%e)
         !endif

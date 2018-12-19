@@ -112,7 +112,7 @@ function ubndS(ax,uc,dxc,dxb)
     if (ks_r(0).ge.ZERO) then
         !Wall function,: ks_r = 0: smooth wall, ks_r > 0: rough wall
         !Get the friction velocity from log-law
-        ust = ustar( uc, HALF * dxc,ks_r(0))
+        ust = ustar( uc, HALF * ax * dxc,ks_r(0))
         !Now find the boundary condition value from the finite 
         !difference formula (see Lemos, C. (1992), A simple numerical
         !technique for turbulent flows with free surfaces)
@@ -138,7 +138,7 @@ function ubndS2(ax,uc,dxc,dxb) !!!!@•¨‘Ì‹«ŠE‚Å‚Ì—¬‘¬Ý’è
     if (ks_r(10).ge.ZERO) then
         !Wall function,: ks_r = 0: smooth wall, ks_r > 0: rough wall
         !Get the friction velocity from log-law
-        ust = ustar( uc, HALF * dxc,ks_r(10))
+        ust = ustar( uc, HALF * ax * dxc,ks_r(10))
         !Now find the boundary condition value from the finite 
         !difference formula (see Lemos, C. (1992), A simple numerical
         !technique for turbulent flows with free surfaces)

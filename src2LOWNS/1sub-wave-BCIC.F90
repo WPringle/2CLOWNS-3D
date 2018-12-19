@@ -421,8 +421,8 @@ subroutine inputwave(wl,vel,iflag,iy,DIM,jss,kss,kee)
                                       !interpolating polynomial order ^   
         if (inflow%width.gt.1.and.inflow%width.lt.4) then
             do jj = 1,inflow%width-1
-                vel(1,jj) = set_wl(t+inflow%t_adj,inflow%dt,                  &
-                                 inflow%size,inflow%vwave(jj,:),2)
+                vel(jj,kss) = set_wl(t+inflow%t_adj,inflow%dt,          &
+                                     inflow%size,inflow%vwave(jj,:),2)
             enddo
         elseif (inflow%wavetype(2:2).eq.'E') then
             ! Calculate from error function

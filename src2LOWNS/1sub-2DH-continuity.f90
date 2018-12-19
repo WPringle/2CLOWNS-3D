@@ -248,8 +248,10 @@ subroutine get_depths(L,LN,nn2,i2,j2,ii2)
     if (L%coupling_dim.eq.2.and.(nstart.ne.0.or.LN.ne.LNUM).and.              &
         i2.ge.L%is2.and.i2.lt.L%ie2.and.j2.ge.L%js2.and.j2.lt.L%je2) then 
         ! Cycle inside of the next layer domain
-        if (ii2.eq.1.and.i2.gt.L%is2+1.and.i2.lt.L%ie2-1) return
-        if (ii2.eq.2.and.j2.gt.L%js2+1.and.j2.lt.L%je2-1) return
+        if (ii2.eq.1.and.i2.gt.L%is2) return
+        if (ii2.eq.2.and.j2.gt.L%js2) return
+        !if (ii2.eq.1.and.i2.gt.L%is2+1.and.i2.lt.L%ie2-1) return
+        !if (ii2.eq.2.and.j2.gt.L%js2+1.and.j2.lt.L%je2-1) return
     endif
     ! The depth at the n time step interpolating in time and space
     ! - for nonlinear & bed friction terms, and for calculating velocity
